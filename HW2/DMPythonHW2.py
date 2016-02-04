@@ -3,6 +3,8 @@
 #Make sure that the output format is perfect as mentioned in the problem.
 #Also check the second row of the download dataset.
 #If it follows a different format, avoid it or remove it.
+import argparse, csv
+import numpy as np
 
 def getAttrValues(fileName, attribute):
     attrVals = []
@@ -15,25 +17,16 @@ def getAttrValues(fileName, attribute):
 	    elif attribute == 'volume':
 		attrVals.append(row[2])
 	    elif attribute == 'open':
-		attrVals.append(row[3]):
+		attrVals.append(row[3])
 	    elif attribute == 'high':
 		attrVals.append(row[4])
 	    elif attribute == 'low':
 		attrVals.append(row[5])
+    attrVals = attrVals[1:]
+    fvals = [float(i) for i in attrVals]
+    return fvals
 
-import argparse
 def normalization ( fileName , normalizationType , attribute):
-    values = getAttrValues(filename, attribute)
-        
-    if normalizationType == 'min_max':
-        base = min(values)
-        rnge = max(values) - base
-        normalized = [(x-base)/range for x in values]
-    elif normalizationType == 'z_score':
-	'''Z SCORE IMPLEMENTATION'''
-    else:
-	print 'Please pick a valid normalization type'
-        
     '''
     Input Parameters:
         fileName: The comma seperated file that must be considered for the normalization
@@ -43,6 +36,18 @@ def normalization ( fileName , normalizationType , attribute):
         For each line in the input file, print the original "attribute" value and "normalized" value seperated by <TAB> 
     '''
     #TODO: Write code given the Input / Output Paramters.
+    values = getAttrValues(fileName, attribute)
+
+    if normalizationType == 'min_max':
+        base = min(values)
+        rnge = max(values) - base
+        normalized = [(x-base)/rnge for x in values]
+    elif normalizationType == 'z_score':
+        mean = np.mean(values)
+        std = np.std(values)
+        z_scores = [(x-mean)/std for x in values]
+    else:
+	    print 'Please pick a valid normalization type'
 
 def correlation ( attribute1 , fileName1 , attribute2, fileName2 ):
     '''
@@ -55,6 +60,10 @@ def correlation ( attribute1 , fileName1 , attribute2, fileName2 ):
     Output:
         Print the correlation coefficient 
     '''
+    vals1 = getAttrValues(fileName1, attribute1)
+    vals2 = getAttrValues(fileName2, attribute2)
+    corr = np.corrcoef(vals1, vals2)
+    print corr
     #TODO: Write code given the Input / Output Paramters.
 
 if __name__ == "__main__":
