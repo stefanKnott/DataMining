@@ -4,9 +4,36 @@
 #Also check the second row of the download dataset.
 #If it follows a different format, avoid it or remove it.
 
-import argparse
+def getAttrValues(fileName, attribute):
+    attrVals = []
+ #Collect proper data
+    with open(fileName, 'rb') as f:
+	reader = csv.reader(f)
+	for row in reader:
+	    if attribute == 'close':
+		attrVals.append(row[1])
+	    elif attribute == 'volume':
+		attrVals.append(row[2])
+	    elif attribute == 'open':
+		attrVals.append(row[3]):
+	    elif attribute == 'high':
+		attrVals.append(row[4])
+	    elif attribute == 'low':
+		attrVals.append(row[5])
 
+import argparse
 def normalization ( fileName , normalizationType , attribute):
+    values = getAttrValues(filename, attribute)
+        
+    if normalizationType == 'min_max':
+        base = min(values)
+        rnge = max(values) - base
+        normalized = [(x-base)/range for x in values]
+    elif normalizationType == 'z_score':
+	'''Z SCORE IMPLEMENTATION'''
+    else:
+	print 'Please pick a valid normalization type'
+        
     '''
     Input Parameters:
         fileName: The comma seperated file that must be considered for the normalization
